@@ -1,7 +1,7 @@
 # Ayush Tiwari
 
 
-## 🌟 Tagline
+## 
 **Passionate Cybersecurity Engineer & Full‑Stack Developer** – building secure, privacy‑first AI solutions.
 
 ---
