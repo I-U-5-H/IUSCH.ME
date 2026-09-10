@@ -1,8 +1,5 @@
-# Ayush Kumar
+# Ayush Tiwari
 
-![GitHub Followers](https://img.shields.io/github/followers/Ayush?style=social)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Website](https://img.shields.io/badge/website-up-brightgreen)
 
 ## 🌟 Tagline
 **Passionate Cybersecurity Engineer & Full‑Stack Developer** – building secure, privacy‑first AI solutions.
@@ -91,13 +88,6 @@ flowchart LR
 
 ---
 
-## 📫 Contact
-- **Email:** ayush.kumar@example.com
-- **LinkedIn:** [linkedin.com/in/ayushkumar](https://linkedin.com/in/ayushkumar)
-- **GitHub:** [github.com/AyushKumar](https://github.com/AyushKumar)
 
 ---
 
-## 📊 Stats & Badges
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=AyushKumar&show_icons=true&theme=radical)
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=AyushKumar&layout=compact&theme=radical)
