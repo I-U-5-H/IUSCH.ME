@@ -42,6 +42,8 @@ const TextPressure = ({
   strokeWidth = 2,
   className = '',
 
+  headingLevel = 2,
+
   minFontSize = 24
 }) => {
   const containerRef = useRef(null);
@@ -182,10 +184,12 @@ const TextPressure = ({
     );
   }, [fontFamily, fontUrl, textColor, strokeColor, strokeWidth]);
 
+  const HeadingTag = `h${headingLevel}`;
+
   return (
     <div ref={containerRef} className="relative w-full h-full overflow-hidden bg-transparent">
       {styleElement}
-      <h1
+      <HeadingTag
         ref={titleRef}
         className={`text-pressure-title ${className} ${
           flex ? 'flex justify-between' : ''
@@ -208,7 +212,7 @@ const TextPressure = ({
             {char}
           </span>
         ))}
-      </h1>
+      </HeadingTag>
     </div>
   );
 };

@@ -16,12 +16,17 @@ html {
   overflow-x: hidden;
 }
 
+html.light {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background-color: #000000 !important;
-  color: #ededed !important;
+  background-color: inherit;
+  color: inherit;
   font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   overflow-y: auto;
@@ -31,7 +36,7 @@ body {
   min-height: 100vh;
   width: 100%;
   position: relative;
-  background-color: #000000;
+  background-color: inherit;
 }
 
 /* Refined Subtle Scrollbar */
@@ -194,4 +199,65 @@ body {
 @keyframes bounce-star {
   0%, 100% { transform: translateY(0) scale(1); }
   50% { transform: translateY(-3px) scale(1.15); }
+}
+
+
+/* ===== Screen reader only utility ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ===== Light mode overrides ===== */
+html.light .space-header {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom-color: #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+html.light .space-logo {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: none;
+}
+
+html.light .space-nav-link {
+  color: #475569;
+  border-color: #e2e8f0;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+html.light .space-nav-link:hover {
+  color: #4f46e5;
+  background: rgba(79, 70, 229, 0.05);
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ===== Focus visible styles for all interactive elements ===== */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 4px;
 }

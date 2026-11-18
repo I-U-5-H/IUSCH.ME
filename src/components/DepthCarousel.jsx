@@ -193,6 +193,24 @@ const DepthCarousel = ({
     const onWheel = e => {
       const cfg = cfgRef.current;
       if (cfg.count < 2) return;
+
+      // Check if mouse cursor is over any visible card
+      const isOverCard = cardRefs.current.some(card => {
+        if (!card) return false;
+        const opacity = parseFloat(card.style.opacity);
+        if (!isNaN(opacity) && opacity <= 0.05) return false;
+        const rect = card.getBoundingClientRect();
+        return (
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom
+        );
+      });
+
+      // If scrolling outside the cards (e.g. far on the sides), allow normal page scrolling!
+      if (!isOverCard) return;
+
       e.preventDefault();
       tweenRef.current?.kill();
       const raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
@@ -213,6 +231,22 @@ const DepthCarousel = ({
   const onPointerDown = useCallback(e => {
     const cfg = cfgRef.current;
     if (cfg.count < 2) return;
+
+    // Only start drag if pointer is directly on a card
+    const isOverCard = cardRefs.current.some(card => {
+      if (!card) return false;
+      const opacity = parseFloat(card.style.opacity);
+      if (!isNaN(opacity) && opacity <= 0.05) return false;
+      const rect = card.getBoundingClientRect();
+      return (
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom
+      );
+    });
+    if (!isOverCard) return;
+
     tweenRef.current?.kill();
     dragRef.current = {
       x: e.clientX,
@@ -341,7 +375,7 @@ const DepthCarousel = ({
   return (
     <div
       ref={rootRef}
-      className={`relative flex h-full min-h-[320px] w-full cursor-grab touch-pan-y select-none items-center justify-center outline-none [perspective-origin:50%_50%] active:cursor-grabbing focus-visible:rounded-xl focus-visible:outline-2 focus-visible:outline-white/50 focus-visible:[outline-offset:4px] ${className}`.trim()}
+      className={`relative flex h-full min-h-[320px] w-full select-none items-center justify-center outline-none [perspective-origin:50%_50%] focus-visible:rounded-xl focus-visible:outline-2 focus-visible:outline-white/50 focus-visible:[outline-offset:4px] ${className}`.trim()}
       style={{ perspective: `${perspective}px` }}
       role="group"
       aria-roledescription="carousel"
@@ -357,16 +391,19 @@ const DepthCarousel = ({
         {data.map((item, i) => (
           <div
             key={i}
-            className="absolute left-1/2 top-1/2 cursor-pointer overflow-hidden bg-[#0b0d12] shadow-[0_30px_60px_-20px_rgba(0,0,0,0.65),0_8px_20px_-10px_rgba(0,0,0,0.5)] [transform:translate(-50%,-50%)] [transform-origin:center] [will-change:transform,opacity,filter]"
+            className="absolute left-1/2 top-1/2 cursor-grab active:cursor-grabbing overflow-hidden bg-[#0b0d12] shadow-[0_30px_60px_-20px_rgba(0,0,0,0.65),0_8px_20px_-10px_rgba(0,0,0,0.5)] [transform:translate(-50%,-50%)] [transform-origin:center] [will-change:transform,opacity,filter]"
             ref={el => (cardRefs.current[i] = el)}
             style={{ width: cardWidth, height: cardHeight, borderRadius: radius }}
             aria-roledescription="slide"
             aria-label={`${i + 1} of ${count}`}
-            aria-hidden={active !== i}
+            aria-hidden={active !== i ? 'true' : undefined}
             onClick={() => onCardClick(i)}
           >
             {item.content ? (
-              <div className="h-full w-full select-none overflow-hidden">
+              <div
+                className="h-full w-full select-none overflow-hidden"
+                inert={active !== i ? '' : undefined}
+              >
                 {typeof item.content === 'function' ? item.content({ isActive: active === i, index: i }) : item.content}
               </div>
             ) : (
@@ -390,7 +427,7 @@ const DepthCarousel = ({
         <>
           <button
             type="button"
-            className="absolute left-4 top-1/2 z-[3000] grid h-[42px] w-[42px] -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.55)] text-white backdrop-blur-md transition-[background,border-color,transform] duration-200 hover:border-white/40 hover:bg-[rgba(28,31,40,0.85)] active:scale-95"
+            className="absolute left-4 top-1/2 z-[3000] grid h-[48px] w-[48px] -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.55)] text-white backdrop-blur-md transition-[background,border-color,transform] duration-200 hover:border-white/40 hover:bg-[rgba(28,31,40,0.85)] active:scale-95"
             aria-label="Previous slide"
             onClick={() => navigateBy(-1)}
           >
@@ -407,7 +444,7 @@ const DepthCarousel = ({
           </button>
           <button
             type="button"
-            className="absolute right-4 top-1/2 z-[3000] grid h-[42px] w-[42px] -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.55)] text-white backdrop-blur-md transition-[background,border-color,transform] duration-200 hover:border-white/40 hover:bg-[rgba(28,31,40,0.85)] active:scale-95"
+            className="absolute right-4 top-1/2 z-[3000] grid h-[48px] w-[48px] -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.55)] text-white backdrop-blur-md transition-[background,border-color,transform] duration-200 hover:border-white/40 hover:bg-[rgba(28,31,40,0.85)] active:scale-95"
             aria-label="Next slide"
             onClick={() => navigateBy(1)}
           >
@@ -438,10 +475,15 @@ const DepthCarousel = ({
               role="tab"
               aria-selected={active === i}
               aria-label={`Go to slide ${i + 1}`}
-              className={`h-[7px] cursor-pointer rounded-full transition-[width,background] duration-[250ms] ${active === i ? 'w-5 bg-white' : 'w-[7px] bg-white/30'
-                }`}
+              className="min-h-[24px] min-w-[24px] flex items-center justify-center cursor-pointer rounded-full transition-[width,background] duration-[250ms]"
               onClick={() => setFocus(i, true)}
-            />
+            >
+              <span
+                aria-hidden="true"
+                className={`block h-[7px] rounded-full transition-[width,background] duration-[250ms] ${active === i ? 'w-5 bg-white' : 'w-[7px] bg-white/30'
+                }`}
+              />
+            </button>
           ))}
         </div>
       )}
